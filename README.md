@@ -1,6 +1,6 @@
 # ZipViewer - Private Archive Viewer
 
-A Android native app for viewing images directly from encrypted ZIP, RAR, and 7Z archives.
+An Android native app for viewing images directly from encrypted ZIP, RAR, and 7Z archives.
 
 ## Features
 - **Privacy First**: All data is stored in internal storage and cannot be accessed by other apps.
