@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,11 +44,22 @@ public class MainActivity extends AppCompatActivity implements ArchiveAdapter.On
     private List<ArchiveItem> archives;
     private List<ArchiveItem> filteredArchives;
     private PasswordManager passwordManager;
+    private ActivityResultLauncher<String[]> filePickerLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize file picker launcher
+        filePickerLauncher = registerForActivityResult(
+                new ActivityResultContracts.OpenDocument(),
+                uri -> {
+                    if (uri != null) {
+                        openArchiveFile(uri);
+                    }
+                }
+        );
 
         recyclerView = findViewById(R.id.recyclerView);
         fabAdd = findViewById(R.id.fabAdd);
@@ -61,8 +74,13 @@ public class MainActivity extends AppCompatActivity implements ArchiveAdapter.On
         recyclerView.setAdapter(archiveAdapter);
 
         fabAdd.setOnClickListener(v -> {
-            Toast.makeText(this, "Select a ZIP file to add", Toast.LENGTH_SHORT).show();
-            // TODO: Implement file picker
+            // Launch file picker for archive files
+            filePickerLauncher.launch(new String[]{
+                    "application/zip",
+                    "application/x-zip-compressed",
+                    "application/x-rar-compressed",
+                    "application/x-7z-compressed"
+            });
         });
 
         searchBar.addTextChangedListener(new TextWatcher() {
