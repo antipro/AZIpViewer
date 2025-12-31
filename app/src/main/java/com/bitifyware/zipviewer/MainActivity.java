@@ -92,24 +92,35 @@ public class MainActivity extends AppCompatActivity {
      * Files in internal storage cannot be accessed by other apps
      */
     private File copyToInternalStorage(Uri uri) throws Exception {
-        InputStream inputStream = getContentResolver().openInputStream(uri);
         File internalDir = new File(getFilesDir(), "archives");
         if (!internalDir.exists()) {
             internalDir.mkdirs();
         }
         
+        // Get filename and sanitize to prevent path traversal
         String fileName = uri.getLastPathSegment();
+        if (fileName == null || fileName.isEmpty()) {
+            fileName = "archive_" + System.currentTimeMillis() + ".zip";
+        }
+        // Sanitize filename to prevent directory traversal attacks
+        fileName = new File(fileName).getName();
+        
         File outputFile = new File(internalDir, fileName);
         
-        FileOutputStream outputStream = new FileOutputStream(outputFile);
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-        while ((bytesRead = inputStream.read(buffer)) != -1) {
-            outputStream.write(buffer, 0, bytesRead);
+        // Use try-with-resources to ensure streams are properly closed
+        try (InputStream inputStream = getContentResolver().openInputStream(uri);
+             FileOutputStream outputStream = new FileOutputStream(outputFile)) {
+            
+            if (inputStream == null) {
+                throw new Exception("Cannot open input stream");
+            }
+            
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
         }
-        
-        outputStream.close();
-        inputStream.close();
         
         return outputFile;
     }

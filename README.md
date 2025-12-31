@@ -54,6 +54,7 @@ The app is registered as a generic File Viewer (appears in "Open With" menus) wi
     <data android:mimeType="application/zip" />
     <data android:mimeType="application/x-zip-compressed" />
     <data android:mimeType="application/x-rar-compressed" />
+    <data android:mimeType="application/x-7z-compressed" />
 </intent-filter>
 ```
 
