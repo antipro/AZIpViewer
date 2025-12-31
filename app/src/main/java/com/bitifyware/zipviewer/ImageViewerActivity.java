@@ -143,7 +143,9 @@ public class ImageViewerActivity extends AppCompatActivity {
     }
 
     private void updateImageCounter(int position) {
-        tvImageCounter.setText((position + 1) + " / " + sharedImages.size());
+        if (sharedImages != null) {
+            tvImageCounter.setText((position + 1) + " / " + sharedImages.size());
+        }
     }
 
     private void toggleUI() {
