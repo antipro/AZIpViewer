@@ -190,28 +190,30 @@ public class MainActivity extends AppCompatActivity implements ArchiveAdapter.On
                         promptForPassword(archiveFile.getName(), null);
                     } else if (fromSharedIntent) {
                         // Non-encrypted shared file - open directly
-                        Toast.makeText(this, "Archive added: " + archiveFile.getName(), Toast.LENGTH_SHORT).show();
-                        loadArchives();
+                        showArchiveAddedMessage(archiveFile.getName());
                         openGallery(archiveFile, null);
                     } else {
                         // Non-encrypted file from picker - just add it
-                        Toast.makeText(this, "Archive added: " + archiveFile.getName(), Toast.LENGTH_SHORT).show();
-                        loadArchives();
+                        showArchiveAddedMessage(archiveFile.getName());
                     }
                 });
             } catch (Exception e) {
                 runOnUiThread(() -> {
+                    showArchiveAddedMessage(archiveFile.getName());
                     if (fromSharedIntent) {
-                        Toast.makeText(this, "Archive added: " + archiveFile.getName(), Toast.LENGTH_SHORT).show();
-                        loadArchives();
                         openGallery(archiveFile, null);
-                    } else {
-                        Toast.makeText(this, "Archive added: " + archiveFile.getName(), Toast.LENGTH_SHORT).show();
-                        loadArchives();
                     }
                 });
             }
         }).start();
+    }
+
+    /**
+     * Show archive added message and reload archives list
+     */
+    private void showArchiveAddedMessage(String fileName) {
+        Toast.makeText(this, "Archive added: " + fileName, Toast.LENGTH_SHORT).show();
+        loadArchives();
     }
 
     /**
