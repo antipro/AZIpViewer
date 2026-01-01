@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -337,20 +338,36 @@ public class MainActivity extends AppCompatActivity implements ArchiveAdapter.On
 
     @Override
     public void onDeleteClick(ArchiveItem item) {
-        new AlertDialog.Builder(this)
-                .setTitle("Delete Archive")
-                .setMessage("Are you sure you want to delete " + item.getName() + "?")
-                .setPositiveButton("Delete", (dialog, which) -> {
-                    if (item.getFile().delete()) {
-                        // Also remove password
-                        passwordManager.removePassword(item.getName());
-                        Toast.makeText(this, "Archive deleted", Toast.LENGTH_SHORT).show();
-                        loadArchives();
-                    } else {
-                        Toast.makeText(this, "Failed to delete archive", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_delete, null);
+        TextView deleteMessage = dialogView.findViewById(R.id.deleteMessage);
+        deleteMessage.setText("Are you sure you want to delete " + item.getName() + "?");
+        
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+        
+        // Make dialog background transparent to show custom background
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        
+        dialogView.findViewById(R.id.btnCancel).setOnClickListener(v -> {
+            dialog.dismiss();
+        });
+        
+        dialogView.findViewById(R.id.btnDelete).setOnClickListener(v -> {
+            if (item.getFile().delete()) {
+                // Also remove password
+                passwordManager.removePassword(item.getName());
+                Toast.makeText(this, "Archive deleted", Toast.LENGTH_SHORT).show();
+                loadArchives();
+            } else {
+                Toast.makeText(this, "Failed to delete archive", Toast.LENGTH_SHORT).show();
+            }
+            dialog.dismiss();
+        });
+        
+        dialog.show();
     }
 }
