@@ -20,7 +20,9 @@ import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -283,8 +285,8 @@ public class GalleryActivity extends AppCompatActivity {
     /**
      * Helper method to read all bytes from an InputStream
      */
-    private byte[] readAllBytes(InputStream inputStream) throws Exception {
-        java.io.ByteArrayOutputStream buffer = new java.io.ByteArrayOutputStream();
+    private byte[] readAllBytes(InputStream inputStream) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int nRead;
         byte[] data = new byte[8192];
         while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
