@@ -19,6 +19,7 @@ public class ThumbnailGenerator {
 
     /**
      * Generate a thumbnail from a bitmap
+     * Uses efficient matrix-based scaling for better memory efficiency
      * 
      * @param source The source bitmap
      * @return The thumbnail bitmap
@@ -40,8 +41,11 @@ public class ThumbnailGenerator {
         int newWidth = Math.round(width * scaleFactor);
         int newHeight = Math.round(height * scaleFactor);
 
-        // Create scaled bitmap
-        return Bitmap.createScaledBitmap(source, newWidth, newHeight, true);
+        // Use Matrix for more efficient scaling
+        android.graphics.Matrix matrix = new android.graphics.Matrix();
+        matrix.postScale(scaleFactor, scaleFactor);
+        
+        return Bitmap.createBitmap(source, 0, 0, width, height, matrix, true);
     }
 
     /**

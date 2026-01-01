@@ -67,6 +67,10 @@ public class ImageEntry {
 
     /**
      * Clean up bitmaps to prevent memory leaks
+     * Note: While bitmap recycling is less critical in modern Android,
+     * it's still beneficial for apps handling many large images (5MB each)
+     * to explicitly recycle bitmaps to avoid OutOfMemoryError.
+     * The code checks isRecycled() before any access to prevent crashes.
      */
     public void recycle() {
         if (thumbnail != null && !thumbnail.isRecycled()) {
